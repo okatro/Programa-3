@@ -118,12 +118,30 @@ int main(int argc, char** argv){
 int parse(char* s, complex *z){
 	char* bcc = s;
 	char* cc;
+	double dtemp;
+
 	// init z
 	z->re = 0; z->im = 0;
 	if (s == NULL) return 0;
-	// Convert real part
-	z->re = strtod(bcc, &cc);
-	if(*cc == '\0') return 1;
+
+	//i
+	if(*s == 'i'){
+		z->im = 1;
+		return 1;
+	}
+
+
+	// Convert real part (r)
+	dtemp = strtod(bcc, &cc);
+	if(*cc == '\0'){
+		z->re = dtemp;
+		return 1;
+	}else if(*cc == 'i'){
+		z->im = dtemp;
+		return 1;
+	}else
+		z->re = dtemp;
+
 	// Convert imaginary part
 	if ((*cc != '+') && (*cc != '-')) return 0;
 	bcc = cc;
@@ -169,11 +187,10 @@ complex zdiv(complex z1, complex z2){
 }
 
 complex zpot(complex z1, int pot){
-	printf("pot %d\n", pot);
 
 	complex result = z1;
 	
-	for(int i = 0 ; i < pot ; ++i){
+	for(int i = 1 ; i < pot ; ++i){
 		double PR = 0, PI = 0;
 
 		PR = (z1.re * result.re) - (z1.im * result.im);
