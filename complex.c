@@ -67,6 +67,8 @@ complex zdiv(complex z1, complex z2);
  */
 int parse(char* s, complex *z);
 
+complex zpot(complex z1, int pot);
+
 
 
 /* MAIN *********************************************************/
@@ -75,11 +77,20 @@ int main(int argc, char** argv){
 	complex z1, z2;  /* Store the operands z1 and z2 */
 
 	// Program needs exactly 3 arguments: z1 op z2
-	if(argc != 4) return -1;
+	if(argc != 4){
+		printf("Usage %s re+imi op re2+im2i\n",argv[0]);
+		return -1;
+	}
 
 	// Read operands z1 and z2
-	if(!parse(argv[1], &z1)) return -1;
-	if(!parse(argv[3], &z2)) return -1;
+	if(!parse(argv[1], &z1)){
+		printf("Unrecognized parameter \"%s\"\nUsage %s re+imi op re2+im2i\n",argv[1],argv[0]);
+		return -1;
+	}
+	if(!parse(argv[3], &z2)){
+		printf("Unrecognized parameter \"%s\"\nUsage %s re+imi op re2+im2i\n",argv[3],argv[0]);
+		return -1;
+	}
 
 	// Read operator op. We care only about first character
 	switch(argv[2][0]){
@@ -92,7 +103,10 @@ int main(int argc, char** argv){
 			z = zmul(z1, z2); break;
 		case '/':
 			z = zdiv(z1, z2); break;
+		case '^':
+			z = zpot(z1, (int)z2.re); break;
 		default:
+			printf("Unrecognized parameter \"%s\"\nUsage %s re+imi op re2+im2i\n",argv[2],argv[0]);
 			return -1;
 	}
 	printf("%0.4f%+0.4fi\n", z.re, z.im);
@@ -147,9 +161,29 @@ complex zdiv(complex z1, complex z2){
 
 	complex U = zmul(z1 , Mul);
 	double D = zmul(z2 , Mul).re;
-	
+
 	complex result = {U.re/D , U.im/D};
 
 	return result;
 
+}
+
+complex zpot(complex z1, int pot){
+	printf("pot %d\n", pot);
+
+	complex result = z1;
+	
+	for(int i = 0 ; i < pot ; ++i){
+		double PR = 0, PI = 0;
+
+		PR = (z1.re * result.re) - (z1.im * result.im);
+
+		PI = (z1.re * result.im) + (z1.im * result.re);
+
+		result.re = PR;
+		result.im = PI;
+
+	}
+
+	return result;
 }
