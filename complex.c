@@ -5,10 +5,12 @@
 *   - Substraction    z = z1 - z2
 *   - Multiplication  z = z1 x z2
 *   - Division        z = z1 / z2
+*	- Exponents       z = z1 / z2
 *
 *
 * Author: Mauricio Matamoros
 * License: MIT
+* GitHub: https://github.com/okatro/Programa-3
 *
 * *****************************************************************/
 
@@ -124,14 +126,14 @@ int parse(char* s, complex *z){
 	z->re = 0; z->im = 0;
 	if (s == NULL) return 0;
 
-	//i
+	//if s only contains i it gives the value of 1 to the imaginary part
 	if(*s == 'i'){
 		z->im = 1;
 		return 1;
 	}
 
 
-	// Convert real part (r)
+	// Convert real part and check if it only contains one of the parts
 	dtemp = strtod(bcc, &cc);
 	if(*cc == '\0'){
 		z->re = dtemp;
